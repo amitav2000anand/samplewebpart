@@ -1,4 +1,4 @@
-import * as React from 'react';
+/*import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { Version } from '@microsoft/sp-core-library';
 import {
@@ -110,6 +110,103 @@ export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorld
               groupFields: [
                 PropertyPaneTextField('description', {
                   label: strings.DescriptionFieldLabel
+                })
+              ]
+            }
+          ]
+        }
+      ]
+    };
+  }
+}
+*/
+
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
+import { Version } from '@microsoft/sp-core-library';
+import {
+  type IPropertyPaneConfiguration,
+  PropertyPaneTextField,
+  PropertyPaneToggle
+} from '@microsoft/sp-property-pane';
+import { BaseClientSideWebPart } from '@microsoft/sp-webpart-base';
+
+import * as strings from 'HelloWorldWebPartStrings';
+import HelloWorld from './components/HelloWorld';
+import { IHelloWorldProps } from './components/IHelloWorldProps';
+
+export interface ICopilotAgentWebPartProps {
+  botURL: string;
+  botName?: string;
+  buttonLabel?: string;
+  botAvatarImage?: string;
+  botAvatarInitials?: string;
+  greet?: boolean;
+  customScope: string;
+  clientID: string;
+  authority: string;
+}
+
+export default class CopilotAgentWebPart extends BaseClientSideWebPart<ICopilotAgentWebPartProps> {
+
+  public render(): void {
+    const user = this.context.pageContext.user;
+
+    const element: React.ReactElement<IHelloWorldProps> = React.createElement(HelloWorld, {
+      //...this.properties,
+      botURL: "https://6a0383e2ebc3ee40bdc9d05198285a.12.environment.api.powerplatform.com/powervirtualagents/botsbyschema/crfb3_selfServiceAgent/directline/token?api-version=2022-03-01-preview",
+      botName: "Copilot Self Service Agent",
+      buttonLabel: "Ask Copilot",
+      botAvatarImage: "", // optional
+      botAvatarInitials: "CA", // optional
+      greet: true,
+      customScope: "api://27eb69cb-53e6-40db-8533-dfa804dca4ac/Sites.Read",
+      clientID: "4ffd1a7a-9a30-48a9-bc3d-51060e46591b",
+      authority: "https://login.microsoftonline.com/s63fb.onmicrosoft.com",
+      userEmail: user.email,
+      userFriendlyName: user.displayName
+    });
+
+    ReactDom.render(element, this.domElement);
+  }
+  public onDispose(): void {
+    ReactDom.unmountComponentAtNode(this.domElement);
+  }
+  protected get dataVersion(): Version {
+    return Version.parse('1.0');
+  }
+
+  protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    return {
+      pages: [
+        {
+          header: { description: strings.PropertyPaneDescription },
+          groups: [
+            {
+              groupName: strings.BasicGroupName,
+              groupFields: [
+                PropertyPaneTextField('botURL', {
+                  label: strings.BotUrlFieldLabel
+                }),
+                PropertyPaneTextField('botName', {
+                  label: strings.BotNameFieldLabel
+                }),
+                PropertyPaneTextField('buttonLabel', {
+                  label: strings.ButtonLabelFieldLabel
+                }),
+                PropertyPaneTextField('customScope', {
+                  label: strings.CustomScopeFieldLabel
+                }),
+                PropertyPaneTextField('clientID', {
+                  label: strings.ClientIdFieldLabel
+                }),
+                PropertyPaneTextField('authority', {
+                  label: strings.AuthorityFieldLabel
+                }),
+                PropertyPaneToggle('greet', {
+                  label: strings.GreetFieldLabel,
+                  onText: 'Yes',
+                  offText: 'No'
                 })
               ]
             }
