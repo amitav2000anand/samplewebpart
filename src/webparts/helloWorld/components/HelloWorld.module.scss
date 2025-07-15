@@ -5,6 +5,7 @@
   padding: 1em;
   color: "[theme:bodyText, default: #323130]";
   color: var(--bodyText);
+
   &.teams {
     font-family: $ms-font-family-fallbacks;
   }
@@ -18,6 +19,24 @@
   width: 100%;
   max-width: 420px;
 }
+
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
+.webChat {
+  width: 100%;
+  min-height: 50vh;
+}
+
+.loadingSpinner {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
 
 .links {
   a {

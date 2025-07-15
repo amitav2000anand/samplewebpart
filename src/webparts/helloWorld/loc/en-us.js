@@ -1,4 +1,4 @@
-define([], function() {
+define([], function () {
   return {
     "PropertyPaneDescription": "Description",
     "BasicGroupName": "Group Name",
@@ -12,5 +12,15 @@ define([], function() {
     "AppOfficeEnvironment": "The app is running in office.com",
     "AppOutlookEnvironment": "The app is running in Outlook",
     "UnknownEnvironment": "The app is running in an unknown environment"
+    //Added by Nilangi
+    /*
+    BotUrlFieldLabel: "Bot URL",
+    BotNameFieldLabel: "Bot Display Name",
+    ButtonLabelFieldLabel: "Chat Button Label",
+    CustomScopeFieldLabel: "Custom AAD Scope",
+    ClientIdFieldLabel: "Azure App Client ID",
+    AuthorityFieldLabel: "Authority URL",
+    GreetFieldLabel: "Send Greeting Automatically"
+    */
   }
 });
