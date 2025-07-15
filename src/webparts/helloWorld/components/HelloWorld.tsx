@@ -18,11 +18,22 @@ export default class HelloWorld extends React.Component<IHelloWorldProps> {
 }
 */
 import * as React from "react";
-import * as ReactWebChat from "botframework-webchat";
+//import * as ReactWebChat from "botframework-webchat";
+import {
+  createDirectLine,
+  renderWebChat,
+  createStore
+} from 'botframework-webchat';
+/*
+import createDirectLine from 'botframework-webchat/lib/createDirectLine';
+import renderWebChat from 'botframework-webchat/lib/renderWebChat';
+import { createStore } from 'botframework-webchat-core';
+*/
+
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 import { Dispatch } from 'redux';
 import { useRef, useEffect } from "react";
-
+//import styles from "./HelloWorld.module.scss";
 import { IHelloWorldProps } from "././IHelloWorldProps";
 import MSALWrapper from "./MSALWrapper";
 
@@ -71,16 +82,19 @@ const HelloWorld: React.FC<IHelloWorldProps> = (props) => {
       const response = await fetch(botURL);
       if (response.ok) {
         const conversationInfo = await response.json();
-        directline = ReactWebChat.createDirectLine({
+        console.log("Token for Direct Line:", conversationInfo.token);
+        console.log("Direct Line domain:", `${regionalChannelURL}v3/directline`);
+
+        directline = createDirectLine({
           token: conversationInfo.token,
-          domain: regionalChannelURL + 'v3/directline',
+          domain: `${regionalChannelURL}v3/directline`,
         });
       } else {
         console.error(`Bot token fetch failed: ${response.status}`);
         return;
       }
 
-      const store = ReactWebChat.createStore({}, ({ dispatch }: { dispatch: Dispatch }) => (next: any) => (action: any) => {
+      const store = createStore({}, ({ dispatch }: { dispatch: Dispatch }) => (next: any) => (action: any) => {
         if (props.greet && action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
           dispatch({
             meta: { method: "keyboard" },
@@ -135,7 +149,7 @@ const HelloWorld: React.FC<IHelloWorldProps> = (props) => {
         webChatRef.current.style.minHeight = "50vh";
         loadingSpinnerRef.current.style.display = "none";
 
-        ReactWebChat.renderWebChat(
+        renderWebChat(
           {
             directLine: directline,
             store,
@@ -152,12 +166,21 @@ const HelloWorld: React.FC<IHelloWorldProps> = (props) => {
 
   return (
     <div id="chatContainer" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <div ref={webChatRef} role="main" style={{ width: "100%" }}/>
+      <div ref={webChatRef} role="main" style={{ width: "100%" }} />
       <div ref={loadingSpinnerRef}>
         <Spinner label="Loading..." style={{ paddingTop: "1rem", paddingBottom: "1rem" }} />
       </div>
     </div>
   );
+  /*
+  return (
+  <div className={styles.chatContainer}>
+    <div ref={webChatRef} role="main" className={styles.webChat} />
+    <div ref={loadingSpinnerRef} className={styles.loadingSpinner}>
+      <Spinner label="Loading..." />
+    </div>
+  </div>
+);*/
 };
 
 export default HelloWorld;

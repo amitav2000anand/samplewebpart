@@ -2,7 +2,7 @@ export interface IHelloWorldProps {
   /*
    description: string;
   isDarkTheme: boolean;
-  environmentMessage: string;
+  
   hasTeamsContext: boolean;
   userDisplayName: string;
   */
@@ -10,11 +10,12 @@ export interface IHelloWorldProps {
   buttonLabel?: string;
   botName?: string;
   userEmail: string;
-  userFriendlyName: string;
+  userFriendlyName?: string;
   botAvatarImage?: string;
   botAvatarInitials?: string;
   greet?: boolean;
   customScope: string;
   clientID: string;
   authority: string;
+  environmentMessage?: string;
 }

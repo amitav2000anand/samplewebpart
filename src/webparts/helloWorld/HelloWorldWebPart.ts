@@ -135,7 +135,7 @@ import * as strings from 'HelloWorldWebPartStrings';
 import HelloWorld from './components/HelloWorld';
 import { IHelloWorldProps } from './components/IHelloWorldProps';
 
-export interface ICopilotAgentWebPartProps {
+export interface IHelloWorldWebPartProps {
   botURL: string;
   botName?: string;
   buttonLabel?: string;
@@ -147,13 +147,21 @@ export interface ICopilotAgentWebPartProps {
   authority: string;
 }
 
-export default class CopilotAgentWebPart extends BaseClientSideWebPart<ICopilotAgentWebPartProps> {
+export default class HelloWorldWebPart extends BaseClientSideWebPart<IHelloWorldWebPartProps> {
+  private _environmentMessage: string = '';
+  public async onInit(): Promise<void> {
+    this._environmentMessage = await this._getEnvironmentMessage();
 
+  }
   public render(): void {
     const user = this.context.pageContext.user;
 
     const element: React.ReactElement<IHelloWorldProps> = React.createElement(HelloWorld, {
-      //...this.properties,
+      ...this.properties,
+      userEmail: user.email,
+      userFriendlyName: user.displayName,
+      environmentMessage: this._environmentMessage
+      /*
       botURL: "https://6a0383e2ebc3ee40bdc9d05198285a.12.environment.api.powerplatform.com/powervirtualagents/botsbyschema/crfb3_selfServiceAgent/directline/token?api-version=2022-03-01-preview",
       botName: "Copilot Self Service Agent",
       buttonLabel: "Ask Copilot",
@@ -164,10 +172,32 @@ export default class CopilotAgentWebPart extends BaseClientSideWebPart<ICopilotA
       clientID: "4ffd1a7a-9a30-48a9-bc3d-51060e46591b",
       authority: "https://login.microsoftonline.com/s63fb.onmicrosoft.com",
       userEmail: user.email,
-      userFriendlyName: user.displayName
+      userFriendlyName: user.displayName,
+      environmentMessage: this._environmentMessage
+      */
     });
 
     ReactDom.render(element, this.domElement);
+  }
+  private _getEnvironmentMessage(): Promise<string> {
+    if (!!this.context.sdks.microsoftTeams) {
+      return this.context.sdks.microsoftTeams.teamsJs.app.getContext()
+        .then(context => {
+          switch (context.app.host.name) {
+            case 'Office':
+              return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOffice : strings.AppOfficeEnvironment;
+            case 'Outlook':
+              return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentOutlook : strings.AppOutlookEnvironment;
+            case 'Teams':
+            case 'TeamsModern':
+              return this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentTeams : strings.AppTeamsTabEnvironment;
+            default:
+              return strings.UnknownEnvironment;
+          }
+        });
+    }
+
+    return Promise.resolve(this.context.isServedFromLocalhost ? strings.AppLocalEnvironmentSharePoint : strings.AppSharePointEnvironment);
   }
   public onDispose(): void {
     ReactDom.unmountComponentAtNode(this.domElement);
@@ -185,29 +215,15 @@ export default class CopilotAgentWebPart extends BaseClientSideWebPart<ICopilotA
             {
               groupName: strings.BasicGroupName,
               groupFields: [
-                PropertyPaneTextField('botURL', {
-                  label: strings.BotUrlFieldLabel
-                }),
-                PropertyPaneTextField('botName', {
-                  label: strings.BotNameFieldLabel
-                }),
-                PropertyPaneTextField('buttonLabel', {
-                  label: strings.ButtonLabelFieldLabel
-                }),
-                PropertyPaneTextField('customScope', {
-                  label: strings.CustomScopeFieldLabel
-                }),
-                PropertyPaneTextField('clientID', {
-                  label: strings.ClientIdFieldLabel
-                }),
-                PropertyPaneTextField('authority', {
-                  label: strings.AuthorityFieldLabel
-                }),
-                PropertyPaneToggle('greet', {
-                  label: strings.GreetFieldLabel,
-                  onText: 'Yes',
-                  offText: 'No'
-                })
+                PropertyPaneTextField('botName', { label: 'Bot Name' }),
+                PropertyPaneTextField('botURL', { label: 'Bot URL' }),
+                PropertyPaneTextField('clientID', { label: 'Client ID' }),
+                PropertyPaneTextField('authority', { label: 'Authority' }),
+                PropertyPaneTextField('customScope', { label: 'Custom Scope' }),
+                PropertyPaneToggle('greet', { label: 'Greet on Start', onText: 'Yes', offText: 'No' }),
+                PropertyPaneTextField('botAvatarImage', { label: 'Bot Avatar Image URL' }),
+                PropertyPaneTextField('botAvatarInitials', { label: 'Bot Avatar Initials' }),
+                PropertyPaneTextField('buttonLabel', { label: 'Chat Button Label' })
               ]
             }
           ]

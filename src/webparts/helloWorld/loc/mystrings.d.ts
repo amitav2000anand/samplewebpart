@@ -12,13 +12,13 @@ declare interface IHelloWorldWebPartStrings {
   AppOutlookEnvironment: string;
   UnknownEnvironment: string;
   //Added by Nilangi
-  BotUrlFieldLabel: string;
+  /*BotUrlFieldLabel: string;
   BotNameFieldLabel: string;
   ButtonLabelFieldLabel: string;
   CustomScopeFieldLabel: string;
   ClientIdFieldLabel: string;
   AuthorityFieldLabel: string;
-  GreetFieldLabel: string;
+  GreetFieldLabel: string;*/
 }
 
 declare module 'HelloWorldWebPartStrings' {
