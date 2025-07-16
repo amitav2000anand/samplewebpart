@@ -33,9 +33,9 @@ import { createStore } from 'botframework-webchat-core';
 import { Spinner } from 'office-ui-fabric-react/lib/Spinner';
 import { Dispatch } from 'redux';
 import { useRef, useEffect } from "react";
-//import styles from "./HelloWorld.module.scss";
 import { IHelloWorldProps } from "././IHelloWorldProps";
 import MSALWrapper from "./MSALWrapper";
+import styles from "./HelloWorld.module.scss";
 
 const HelloWorld: React.FC<IHelloWorldProps> = (props) => {
   const webChatRef = useRef<HTMLDivElement>(null);
@@ -163,24 +163,31 @@ const HelloWorld: React.FC<IHelloWorldProps> = (props) => {
 
     void renderBot();
   }, [props]);
+  /*
+    return (
+      <div style={{ minHeight:"70vh", borderWidth:"1px", borderColor:"black"}}>
+      <div id="chatContainer" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <div ref={webChatRef} role="main" style={{ width: "100%" }} />
+        <div ref={loadingSpinnerRef}>
+          <Spinner label="Loading..." style={{ paddingTop: "1rem", paddingBottom: "1rem" }} />
+        </div>
+      </div>
+      </div>
+    );*/
+
 
   return (
-    <div id="chatContainer" style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <div ref={webChatRef} role="main" style={{ width: "100%" }} />
-      <div ref={loadingSpinnerRef}>
-        <Spinner label="Loading..." style={{ paddingTop: "1rem", paddingBottom: "1rem" }} />
-      </div>
-    </div>
-  );
-  /*
-  return (
   <div className={styles.chatContainer}>
-    <div ref={webChatRef} role="main" className={styles.webChat} />
+    <div className={styles.chatHeader}>
+      <div className={styles.chatAvatar}>{props.botAvatarImage ? (<img src={props.botAvatarImage} alt="Bot Avatar" />) : ("🤖")}</div>
+      <div className={styles.chatTitle}>{props.botName || "Copilot Assistant" }</div>
+    </div>
+    <div ref={webChatRef} className={styles.webChat} role="main" />
     <div ref={loadingSpinnerRef} className={styles.loadingSpinner}>
       <Spinner label="Loading..." />
     </div>
   </div>
-);*/
+);
 };
 
 export default HelloWorld;
